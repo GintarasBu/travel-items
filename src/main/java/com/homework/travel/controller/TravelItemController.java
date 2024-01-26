@@ -18,7 +18,7 @@ import com.homework.travel.service.TravelItemService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequestMapping("/travel-items")
+@RequestMapping("/api/travel-items")
 @RestController
 public class TravelItemController {
 	
@@ -32,7 +32,7 @@ public class TravelItemController {
 		return travelItemView;
 	}
 	
-	@PostMapping(value="/")
+	@PostMapping()
 	public Long create(@RequestBody TravelItem travelItem, BindingResult result){
 		TravelItem ti = travelService.create(travelItem, result);
 		if(result.hasErrors()) {
