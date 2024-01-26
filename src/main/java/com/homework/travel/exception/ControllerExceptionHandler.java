@@ -12,10 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+@ControllerAdvice
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@Autowired
@@ -25,14 +27,15 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleInvalidRequest(RuntimeException e, WebRequest request) {
 		InvalidDataException ide = (InvalidDataException) e;
 		List<FieldError> fieldErrors = ide.getErrors().getFieldErrors();
-		List<FieldErrorResource> fieldErrorResource = new ArrayList<FieldErrorResource>();
+		List<FieldErrorResource> fieldErrorResources = new ArrayList<FieldErrorResource>();
 		
 		for(FieldError fieldError: fieldErrors) {
 			FieldErrorResource fer = new FieldErrorResource();
 			fer.setField(fieldError.getField());
 			fer.setResource(fieldError.getObjectName());
 			fer.setCode(fieldError.getCode());
-			fer.setMessage(messageSourceAccessor.getMessage(fieldError.getCode()));
+			fer.setMessage(messageSourceAccessor.getMessage(fieldError.getCode(), fieldError.getArguments()));
+			fieldErrorResources.add(fer);
 		}
 		
 		List<ObjectError> globalErrorList = ide.getErrors().getGlobalErrors();
@@ -48,7 +51,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 			}
 		}
 		ErrorResource error = new ErrorResource(HttpStatus.UNPROCESSABLE_ENTITY.value(), ide.getMessage());
-		error.setFieldErrors(fieldErrorResource);
+		error.setFieldErrors(fieldErrorResources);
 		if(StringUtils.hasLength(error.getMessage())) {
 			error.setMessage(error.getMessage() + "\n" + sb.toString());
 		} else {
