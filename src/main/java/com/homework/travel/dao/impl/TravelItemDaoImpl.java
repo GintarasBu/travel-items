@@ -24,7 +24,7 @@ public class TravelItemDaoImpl extends BasicJpaDao<TravelItem> implements Travel
 			 	
 			return list;
 		} catch(Throwable e) {
-			log.error("Error on loading travelFood", e);
+			log.error("Error on loading travelItem", e);
 		}
 
 		return null;
@@ -32,7 +32,19 @@ public class TravelItemDaoImpl extends BasicJpaDao<TravelItem> implements Travel
 	
 	@Override
 	public List<TravelItem> list(){
-		return em.createQuery("from TravelFood", TravelItem.class).getResultList();
+		return em.createQuery("from TravelItem", TravelItem.class).getResultList();
+	}
+
+	@Override
+	public TravelItem findById(Long id) {
+		return em.find(TravelItem.class, id);
+	}
+	
+	@Override
+	public void deleteById(Long id) {
+		em.createQuery("delete from TravelItem where id = :id")
+		  .setParameter("id", id)
+		  .executeUpdate();
 	}
 
 }

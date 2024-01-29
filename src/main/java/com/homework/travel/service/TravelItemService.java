@@ -11,4 +11,8 @@ public interface TravelItemService {
 	TravelItemView getItems(SeasonType season, Long distance);
 
 	TravelItem create(TravelItem travelItem, BindingResult result);
+	
+	TravelItem update(TravelItem travelItem, BindingResult result);
+
+	void delete(Long id, BindingResult result);
 }

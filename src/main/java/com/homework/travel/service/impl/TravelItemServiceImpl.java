@@ -11,13 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 
-import com.homework.travel.controller.validator.TravelItemValidator;
 import com.homework.travel.dao.TravelItemDao;
 import com.homework.travel.enumeration.SeasonType;
 import com.homework.travel.model.TravelItem;
 import com.homework.travel.pojo.ItemView;
 import com.homework.travel.pojo.TravelItemView;
 import com.homework.travel.service.TravelItemService;
+import com.homework.travel.validator.TravelItemValidator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -67,11 +67,42 @@ public class TravelItemServiceImpl implements TravelItemService {
 
 	@Override
 	public TravelItem create(TravelItem travelItem, BindingResult result) {
-		travelItemValidator.validate(travelItem, result);
-		if(!result.hasErrors()) {
-			travelItemDao.create(travelItem);
+		try {
+			travelItemValidator.validate(travelItem, result);
+			if(!result.hasErrors()) {
+				travelItemDao.create(travelItem);
+			}
+		} catch(Throwable e) {
+			log.error("Error on creating travelItem", e);
 		}
 		return travelItem;
+	}
+
+	@Override
+	public TravelItem update(TravelItem travelItem, BindingResult result) {
+		try {
+			travelItemValidator.validateUpdate(travelItem, result);
+			if(!result.hasErrors()) {
+				travelItem = travelItemDao.update(travelItem);
+			}
+		} catch (Throwable e) {
+			log.error("Error on updating travelItem", e);
+		}
+		
+		return travelItem;
+	}
+
+	@Override
+	public void delete(Long id, BindingResult result) {
+		try {
+			travelItemValidator.validateDelete(id, result);
+			if(!result.hasErrors()) {
+				travelItemDao.deleteById(id);
+			}
+		} catch(Throwable e) {
+			log.error("Error on deleting travelItem with id: {}", id, e);
+		}
+		
 	}
 
 }

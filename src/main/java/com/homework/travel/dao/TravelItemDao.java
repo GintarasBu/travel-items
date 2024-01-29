@@ -10,5 +10,9 @@ public interface TravelItemDao extends BasicDao<TravelItem> {
 	List<TravelItem> list(SeasonType season, long distance);
 
 	List<TravelItem> list();
+	
+	TravelItem findById(Long id);
+	
+	void deleteById(Long id);
 
 }
