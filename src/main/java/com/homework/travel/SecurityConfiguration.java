@@ -43,7 +43,7 @@ public class SecurityConfiguration {
 						.hasRole("USER")
 						.anyRequest()
 						.authenticated())
-				.csrf(csrf -> csrf.disable())
+				.csrf((csrf) -> csrf.disable())
 				.formLogin(withDefaults()).httpBasic(withDefaults()).build();
 	}
 

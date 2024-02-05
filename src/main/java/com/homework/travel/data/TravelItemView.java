@@ -1,4 +1,4 @@
-package com.homework.travel.pojo;
+package com.homework.travel.data;
 
 import java.math.BigDecimal;
 import java.util.List;

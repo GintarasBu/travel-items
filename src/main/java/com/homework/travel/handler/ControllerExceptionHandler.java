@@ -1,4 +1,4 @@
-package com.homework.travel.exception;
+package com.homework.travel.handler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.homework.travel.exception.ErrorResource;
+import com.homework.travel.exception.FieldErrorResource;
+import com.homework.travel.exception.InvalidDataException;
+
 @ControllerAdvice
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 	
@@ -24,7 +28,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 	private MessageSourceAccessor messageSourceAccessor;
 
 	@ExceptionHandler({InvalidDataException.class})
-	protected ResponseEntity<Object> handleInvalidRequest(RuntimeException e, WebRequest request) {
+	protected ResponseEntity<Object> handleValidationErrror(RuntimeException e, WebRequest request) {
 		InvalidDataException ide = (InvalidDataException) e;
 		List<FieldError> fieldErrors = ide.getErrors().getFieldErrors();
 		List<FieldErrorResource> fieldErrorResources = new ArrayList<FieldErrorResource>();

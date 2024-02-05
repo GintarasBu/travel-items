@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,10 +13,11 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 
 import com.homework.travel.dao.TravelItemDao;
+import com.homework.travel.data.Item;
+import com.homework.travel.data.ItemView;
+import com.homework.travel.data.TravelItemView;
 import com.homework.travel.enumeration.SeasonType;
 import com.homework.travel.model.TravelItem;
-import com.homework.travel.pojo.ItemView;
-import com.homework.travel.pojo.TravelItemView;
 import com.homework.travel.service.TravelItemService;
 import com.homework.travel.validator.TravelItemValidator;
 
@@ -31,6 +33,17 @@ public class TravelItemServiceImpl implements TravelItemService {
 	
 	@Autowired
 	private TravelItemValidator travelItemValidator; 
+	
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	@Override
+	public TravelItem get(Long id) {
+		if(id == null) {
+			return null;
+		}
+		return travelItemDao.findById(id);
+	}
 	
 	@Override
 	public TravelItemView getItems(SeasonType season, Long distance) {
@@ -50,11 +63,11 @@ public class TravelItemServiceImpl implements TravelItemService {
 								entry.getValue().stream().map(itemWeight).reduce(BigDecimal.ZERO, BigDecimal::add)))
 						.collect(Collectors.toList());
 
-				Long itemsCount = aggregatedItems.stream().map(m -> m.getQuantity()).reduce(0L, Long::sum);
+				int itemsCount = aggregatedItems.size();
 
 				travelItemView.setTravelItemList(aggregatedItems);
-				travelItemView.setIntemsCount(itemsCount.intValue());
-				BigDecimal totalWeight = items.stream().map(i -> i.getWeight()).reduce(BigDecimal.ZERO, BigDecimal::add);
+				travelItemView.setIntemsCount(itemsCount);
+				BigDecimal totalWeight = aggregatedItems.stream().map(i -> i.getTotalWeight()).reduce(BigDecimal.ZERO, BigDecimal::add);
 				travelItemView.setTotalWeight(totalWeight);
 				return travelItemView;
 			}
@@ -63,6 +76,12 @@ public class TravelItemServiceImpl implements TravelItemService {
 		}
 
 		return null;
+	}
+	
+	@Override
+	public TravelItem create(Item item, BindingResult result) {
+		TravelItem travelItem = modelMapper.map(item, TravelItem.class);
+		return create(travelItem, result);
 	}
 
 	@Override

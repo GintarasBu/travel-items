@@ -33,7 +33,6 @@ public class TravelItemValidator extends BaseValidator<TravelItem> {
 		if(!required(item, errors, "errors.travel_item.null")) {
 			return;
 		}
-		shouldBeNull(item.getId(), "id", errors, "errors.travel_item.id.possible_overide");
 		validateFields(item, errors);
 	}
 	
@@ -41,7 +40,6 @@ public class TravelItemValidator extends BaseValidator<TravelItem> {
 		if(!required(item, errors, "errors.travel_item.null")) {
 			return;
 		}
-		entityRequired(item.getId(), errors);
 		validateFields(item, errors);
 	}
 	

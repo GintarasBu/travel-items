@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class AppRepositoryConfig {
 
-
     @Bean
     PlatformTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
     	JpaTransactionManager transactionManager = new JpaTransactionManager(entityManagerFactory.getObject());
